@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\bahanbaku;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +15,15 @@ class BahanbakuController extends Controller
         $data = DB::table('bahanbakus')->get();
         return view('data', ['data' => $data]);
     }
-
+    public function getdata()
+    {
+        $data = bahanbaku::all();
+        return response()->json($data);
+    }    
+    public function tampil()
+    {
+        return view('index');
+    }
     public function calculateSnacks(Request $request)
     {
         $gula = $request->input('gula');
@@ -27,10 +36,9 @@ class BahanbakuController extends Controller
 
         $jumlahSnack = min($jumlahGula, $jumlahTepung, $jumlahCoklat);
 
-        return view('calculate-snacks');
         return response()->json(['jumlah_snack' => $jumlahSnack]);
     }
-
+    
     public function store(Request $request)
     {
         // Validasi data yang diterima
@@ -41,7 +49,7 @@ class BahanbakuController extends Controller
         ]);
 
         // Tambahkan data ke database
-        $data = new Data;
+        $data = new bahanbaku;
         $data->gula = $request->input('gula');
         $data->tepung = $request->input('tepung');
         $data->coklat = $request->input('coklat');
@@ -72,13 +80,13 @@ class BahanbakuController extends Controller
         'coklat' => 'required'
         ]);
         // Cari data berdasarkan id
-        $data = Data::find($id);
+        //dd($request);
+        $data = bahanbaku::find($id);
 
         // Perbarui data
         $data->gula = $request->gula;
         $data->tepung = $request->tepung;
         $data->coklat = $request->coklat;
-
         // Simpan perubahan
         $data->save();
 

@@ -14,8 +14,10 @@ use App\Http\Controllers\BahanbakuController;
 */
 
 // Menampilkan data
-Route::get('/calculate-snacks', [BahanbakuController::class,'calculateSnacks']);
+Route::post('/calculate-snacks', [BahanbakuController::class,'calculateSnacks']);
 Route::get('/data', [BahanbakuController::class,'index']);
+Route::get('/getdata', [BahanbakuController::class,'getdata']);
+Route::get('/tampil', [BahanbakuController::class,'tampil']);
 
 // Menampilkan halaman untuk membuat data baru
 Route::get('/data/create', [BahanbakuController::class,'create']);

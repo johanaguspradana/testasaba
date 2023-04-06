@@ -1,34 +1,4 @@
 $(document).ready(function() {
-    // Tambahkan event listener ke tombol "Simpan"
-    $('#btnSimpan').click(function(event) {
-        event.preventDefault();
-        
-        // Ambil nilai dari input dan masukkan ke dalam objek data
-        var data = {
-            'gula': $('#inputGula').val(),
-            'tepung_tapioka': $('#inputTepung').val(),
-            'coklat_padat': $('#inputCoklat').val()
-        };
-        
-        // Kirim permintaan Ajax ke server
-        $.ajax({
-            type: 'POST',
-            url: '/data',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            success: function(response) {
-                // Tampilkan pesan berhasil
-                alert(response.message);
-            },
-            error: function(response) {
-                // Tampilkan pesan kesalahan
-                alert(response.responseJSON.message);
-            }
-        });
-    });
-});
-
-$(document).ready(function() {
     // Tambahkan event listener ke tombol "Edit"
     $('body').on('click', '.btn-edit', function(event) {
         event.preventDefault();
