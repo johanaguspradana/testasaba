@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -18,6 +16,7 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
+    <link href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/sb-admin-2.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
 </head>
@@ -43,7 +42,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="index.htm">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>            
@@ -52,16 +51,22 @@
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="{{ url('product') }}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Data Produk</span></a>
             </li>
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
+                <a class="nav-link" href="{{ url('data') }}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Bahan Produk</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('perhitungan') }}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Perhitungan</span></a>
             </li>
         </ul>
         <!-- End of Sidebar -->
@@ -93,8 +98,6 @@
                             </div>
                         </div>
                     </form>
-    
-
                 </nav>
                 <!-- End of Topbar -->
 
@@ -105,47 +108,12 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                     </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-                    <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Gula</th>
-            <th>Tepung Tapioka</th>
-            <th>Coklat Padat</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($data as $item)
-            <tr>
-                <td>{{ $item->gula }}</td>
-                <td>{{ $item->tepung }}</td>
-                <td>{{ $item->coklat}}</td>
-                <td><button class="btn btn-success btn-edit" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ $item->id }}" data-gula="{{ $item->gula }}" data-tepung="{{ $item->tepung }}" data-coklat="{{ $item->coklat }}">Edit</button>
-                </td>
-            </tr>    
-        @endforeach
-    </tbody>
-    </table>
-    @include('edit')
-                    
+                @yield('konten')        
                 </div>
                 <!-- /.container-fluid -->
 
             </div>
             <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
 
         </div>
         <!-- End of Content Wrapper -->
@@ -159,23 +127,84 @@
     </a>
 
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
+    <script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="{{asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="{{asset('js/sb-admin-2.min.js')}}"></script>
 
     <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="{{asset('vendor/chart.js/Chart.min.js')}}"></script>
 
     <!-- Page level custom scripts -->
     <script src="{{asset('js/demo/chart-area-demo.js')}}"></script>
     <script src="{{asset('js/demo/chart-pie-demo.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
-
+    <script src="{{asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('js/demo/datatables-demo.js')}}"></script>
+    <script>
+        function getdata(){
+            $.ajax({
+                type: 'GET',
+                    url: '/getdata',
+                    success: function(response) {
+                        console.log(response);
+                        $(`#dataTable tbody`).html(``);
+                        response.forEach((element,i) => {
+                        var data = `
+                            <tr>
+                                <td>`+(i+1)+`</td>
+                                <td>`+element.gula+`</td>
+                                <td>`+element.tepung+`</td>
+                                <td>`+element.coklat+`</td>
+                                <td><button class="btn btn-success btn-edit" data-id="`+element.id+`" data-gula="`+element.gula+`" data-tepung="`+element.tepung+`" data-coklat="`+element.coklat+`">Edit</button>
+                                <button class="btn btn-danger btn-hapus" data-id="`+element.id+`">Hapus</button>
+                                </td>
+                            </tr> `                   
+                        
+                            $(`#dataTable tbody`).append(data); 
+                        });
+                    },
+                    error: function(response) {
+                        // Tampilkan pesan kesalahan
+                        alert(response.responseJSON.message);
+                    }
+            });
+        }
+    </script>
+    <script>
+        function getdata(){
+            $.ajax({
+                type: 'GET',
+                    url: '/getdataproduct',
+                    success: function(response) {
+                        console.log(response);
+                        $(`#dataTable tbody`).html(``);
+                        response.forEach((element,i) => {
+                        var data = `
+                            <tr>
+                                <td>`+(i+1)+`</td>
+                                <td>`+element.productgula+`</td>
+                                <td>`+element.producttepung+`</td>
+                                <td>`+element.productcoklat+`</td>
+                                <td><button class="btn btn-success btn-edit" data-id="`+element.id+`" data-gula="`+element.productgula+`" data-tepung="`+element.producttepung+`" data-coklat="`+element.productcoklat+`">Edit</button>
+                                <button class="btn btn-danger btn-hapus" data-id="`+element.id+`">Hapus</button>
+                                </td>
+                            </tr> `                   
+                        
+                            $(`#dataTable tbody`).append(data); 
+                        });
+                    },
+                    error: function(response) {
+                        // Tampilkan pesan kesalahan
+                        alert(response.responseJSON.message);
+                    }
+            });
+        }
+    </script>
 </body>
-
 </html>

@@ -97,7 +97,7 @@ class BahanbakuController extends Controller
     public function destroy($id)
     {
         // Cari data berdasarkan id
-        $data = Data::find($id);
+        $data = bahanbaku::find($id);
         // Hapus data
         $data->delete();
 
